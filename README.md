@@ -2,7 +2,7 @@ SHORT DESCRIPTION
 =====================================
 Free Windows x64 VST3: three-band modular FX, a wavetable synth with custom wave editing, 23 effect families, creative randomizers and separate band outputs.
 
-MULTIBAND MODULAR RACK — v1.4.10
+MULTIBAND MODULAR RACK — v1.4.15
 By DzaQ713
 
 A C++/JUCE audio effect, instrument and sound-design workspace. Choose DAW audio, the MIDI synthesizer or a test generator; split the source into LOW/MID/HIGH and build an independent processing chain for each band.
@@ -85,7 +85,14 @@ SOLO/MUTE fades out and suspends the affected band's FX/oversampling, discarding
 MASTER AND ROUTING
 ------------------------------------
 - Complementary linear-phase FIR crossover with adjustable split frequencies and three steepness profiles.
-- Ten-point Master EQ, HP/LP and SOLO BAND in the two-row layout.
+- Ten-point Master Parametric EQ with Band, Low Shelf and High Shelf shapes. Select points directly on the graph: white is active, yellow selected and grey muted but still selectable.
+- Each point has Frequency, Q, base Gain and always-visible Side Boost/Mid Boost (-18 to +18 dB each). Effective gains are Gain + Side Boost and Gain + Mid Boost, up to +/-36 dB statically. Mid/Side EQ does not create stereo from mono or automatically preserve loudness.
+- S / LS / B / HS / M provides Solo, shape selection and point bypass. HP/LP use stepped OFF / 12 / 24 / 48 dB/oct controls beside Frequency.
+- Independent Dynamic EQ per point: Threshold -36 to 0 dBFS, continuous Ratio 0.50:1 to 12.00:1, Attack 0.10-500 ms and Release 10-3000 ms. Initial settings: OFF, 0 dBFS, 1:1, 30 ms and 100 ms; switching preserves edits.
+- Dynamic detection follows the point's frequency region without cancelling anti-phase stereo. Ratios above 1 reduce that region above threshold; ratios below 1 expand it; Ratio 1 is neutral. Common Mid/Side correction is limited to +/-18 dB. Curves show the combined response and actual dynamic gain of the selected point.
+- Full-width EQ graph above four compact groups: HP, selected point, Dynamic and LP, with thirteen knobs in one row.
+- EQ Power OFF bypasses HP/LP, point processing and Solo Band. Limiter Power OFF bypasses its Input gain, detector, limiting and Gain Compensation while retaining alignment delay. Master Mix and final Master Output remain independent in MASTER mode.
+- Inactive EQ/Limiter sections are dimmed and grayscale, with analyses stopped and graphs hidden. Settings remain editable. ROUTING replaces both panels with a DAW configuration explanation.
 - Master Limiter: INPUT, CEILING, RELEASE, LOOKAHEAD and post-ceiling GAIN COMPENSATION.
 - Limiter Waveform and compensated ceiling reference are measured before final MASTER OUTPUT; that final gain has its own peak meter.
 - MASTER sends stereo to 1/2. ROUTING bypasses Master processing, silences 1/2 and sends LOW to 3/4, MID to 5/6, HIGH to 7/8.
@@ -108,7 +115,7 @@ COMPATIBILITY AND VALIDATION
 ------------------------------------
 Windows 10/11 x64 VST3; JUCE/Projucer and Visual Studio 2026. REAPER is the primary user-test host. Product metadata is 'MMR Multiband Modular Rack', manufacturer 'DzaQ713', avoiding a duplicated suffix when the host adds the manufacturer.
 
-Existing VST3 class IDs and automation IDs are retained. There are 1022 host parameters; extensions retain the existing parameter IDs, indices, types and ranges. The original 14 automation-slot identities remain fixed. The creative FX families have a dedicated first-instance bank per band; extra copies save independent settings without automatically obtaining separate automation banks. Six appended parameters select CUSTOM for the original Saturation/Distortion slots across the three bands. Duplicate instances save their own selection locally; curve points are saved geometry rather than host automation parameters. Additive schema-v4 state, CustomWaves format 3 and CustomShapers format 1 retain older-preset support. Older states without custom-shaper data load with CUSTOM disabled.
+Existing VST3 class IDs and automation IDs are retained. There are 1152 host parameters; extensions retain the existing parameter IDs, indices, types and ranges. The original 14 automation-slot identities remain fixed. The creative FX families have a dedicated first-instance bank per band; extra copies save independent settings without automatically obtaining separate automation banks. Six appended parameters select CUSTOM for the original Saturation/Distortion slots across the three bands. Duplicate instances save their own selection locally; curve points are saved geometry rather than host automation parameters. Additive schema-v4 state, CustomWaves format 3 and CustomShapers format 1 retain older-preset support. Older states without custom-shaper data load with CUSTOM disabled. Old Linked M/S automation remains supported; direct boost controls adopt its gains when edited. The fifty appended Dynamic EQ parameters restore older states with dynamics OFF; no manual migration or additional Dynamic EQ latency is required.
 
 Native development checks cover state, DSP, factory-bank compatibility, custom editing, capture, variable blocks, displays and aligned routing. Pitch checks also cover harmonic multi-note input, an isolated MID rack at -2 semitones / 100% wet, measured delay and filtered sample-rate conversion. The owner confirmed the GUITAR processing in the tested guitar-DI setup. This does not imply that every feature or possible host configuration has completed user acceptance.
 
