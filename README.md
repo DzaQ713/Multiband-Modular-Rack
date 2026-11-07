@@ -1,135 +1,104 @@
-SHORT DESCRIPTION
-=====================================
-Free Windows x64 VST3: three-band modular FX, a wavetable synth with custom wave editing, 23 effect families, creative randomizers and separate band outputs.
-
-MULTIBAND MODULAR RACK — v1.5.0
+MULTIBAND MODULAR RACK
+====================================
 By DzaQ713
 
-A C++/JUCE audio effect, instrument and sound-design workspace. Choose DAW audio, the MIDI synthesizer or a test generator; split the source into LOW/MID/HIGH and build an independent processing chain for each band.
+Free Windows x64 VST3 combining three-band effects, a modular wavetable synthesizer, a test generator and master processing. Built in C++ with JUCE. This repository accompanies binary releases, documentation and issue reporting; development sources remain private. Freeware does not imply an open-source licence.
 
-This page accompanies the freeware binary releases, documentation and issue reporting. Development sources remain private. Freeware does not grant an open-source licence; use and redistribution follow the owner's published terms.
-
-INPUT
+INPUT AND SIGNAL FLOW
 ------------------------------------
-- Mutually exclusive AUDIO, SYNTHESIZER and GENERATOR sources; AUDIO is the default.
-- White noise, pink noise and frequency-adjustable sine testing.
-- The generator's dedicated post-Master-Output spectrum runs only while GENERATOR and its analyzer panel are active. Loading a saved generator state disarms the test source and returns to AUDIO.
+Choose one source: AUDIO (default DAW input), SYNTHESIZER (MIDI instrument) or GENERATOR (white noise, pink noise or adjustable sine). The source feeds a complementary linear-phase crossover and independent LOW, MID and HIGH racks. Rack oversampling offers 1x/2x/4x/8x.
+
+The generator's post-Master-Output spectrum runs only when GENERATOR and its analyzer panel are active. Loading saved generator settings disarms the test source and returns to AUDIO. The synth Output Guard appears only in INPUT > SYNTHESIZER and protects the synth before downstream effects.
 
 MODULAR WAVETABLE SYNTH
-- Three top-down lanes with docked waveform headers and independent scrolling.
-- Ten factory families / 40 frames: CLASSIC, HARMONIC, FORMANT, PULSE, ODD ORGAN, EVEN GLOW, HOLLOW REED, METALLIC CLUSTER, SOFT FOLD and DIGITAL STEPS.
-- POSITION scanning, tuning, phase, Warp/Amount and 1-8 unison voices per lane with detune/spread.
-- Add, remove, enable and reorder Wave Shaper, Filter, Amp Envelope and Level/Pan cards. Each audio-card type occurs once per lane; order changes processing.
-- Six ADSR envelopes with curvature and NOTE/tempo-synced LOOP; eight LFOs including drawn curves; four macros, four smooth random sources and 16 signed-depth modulation connections.
-- POLY up to 16 notes, MONO/LEGATO and glide. Route MIDI to this audio-effect plugin to play the instrument.
-- Inline MOD editors, constrained RANDOM, previous-patch UNDO and confirmation-based CLEAR.
-- Grey static and blue predicted modulation references work without incoming MIDI/audio. NOTE, LOOP and FREE use their respective reference clocks.
-- Docked OUTPUT GUARD appears only in INPUT > SYNTHESIZER. It protects the source before FX racks; later processing can raise level again.
-- A Legacy synth engine and its original bank selectors are also available.
+------------------------------------
+- Three independently scrolling top-down wavetable lanes with docked waveform headers.
+- Ten factory families / 40 frames, Position scanning, tuning, phase, Warp/Amount and 1-8 unison voices per lane with detune/spread.
+- Reorderable Wave Shaper, Filter, dedicated Amp Envelope and Level/Pan audio modules. Each audio-module type occurs once per lane.
+- POLY up to 16 notes, MONO/LEGATO, glide and MIDI sustain. Route MIDI to this audio-effect plugin to play it. The Legacy engine remains available.
+- Each lane has its own AMP envelope with ADSR, Peak, separate Attack/Decay/Release curves and looping.
+- Parameter-local MODS racks contain independent LFO, Envelope, Random, Macro, Velocity, Mod Wheel, Aftertouch and Key Track sources, edited directly at their destination.
+- Scale, Offset, Curve, Slew and Quantize transformations shape modulation signals. Reordering transformations changes their processing order.
+- Eligible modulator controls can themselves be modulated. Dependency validation rejects cycles; modulation is evaluated with per-voice separation where required.
+- LFO/ENV editors support curve shaping, draggable envelope junctions and LFO point tangent/smoothness controls. Relevant editors provide history, randomization and Apply/Cancel audition.
+- Tempo timing includes STRAIGHT, TRIPLET and DOTTED choices. Envelopes support NOTE or repeating LOOP; LFOs offer free/synced timing and retriggering.
+- Clickable wavetable FX MAP groups modulation by destination and opens the corresponding editor, including nested modulation controls.
+- Cyan knob markers show effective running DSP values and the spread between voices. Grey base and blue predicted waveform curves remain independent previews, not an audio oscilloscope.
+- Synth RANDOM covers local sources, shapes, rhythms, curves and nested modulation while retaining an audible foundation. UNDO restores the previous patch; CLEAR asks for confirmation.
 
-CUSTOM WAVE EDITOR
-Click a modular waveform to edit a four-frame CUSTOM bank. Use up to ten points per frame, POINT selection, AMPLITUDE, Q, LEFT/RIGHT CURVE and local segment shaping. BASE PHASE and POINTS PHASE can move separately or together through LINK. Zoom, point removal, local Undo/Redo and RANDOM are available.
+Local MODS racks support multiple sources and nested modulation. Practical complexity depends on system resources; generated patches use bounded sizes.
 
-Draft audition uses the actual synth modulation and Position path. Accept commits; Cancel restores. Unaccepted drafts are excluded from saved host state. CUSTOM banks and geometry are saved with presets/projects. External wavetable-file import is not included.
+CUSTOM WAVE EDITING
+Click a waveform to edit a four-frame CUSTOM bank. Select a base wave, including FLAT, and shape connected periodic segments with point selection, Amplitude, Q and Left/Right Curve. Base Phase and Points Phase can move independently or together through LINK. Point removal, zoom, history and randomization are available.
 
-23 EFFECT FAMILIES
+Draft audition follows the synth's modulation/Position path. Accept commits; Cancel restores the committed bank. Only committed geometry is saved. Older wave geometry is retained for compatibility. External wavetable-file import and Vital preset compatibility are not included.
+
+23 FX FAMILIES / 148 MODELS
 ------------------------------------
 Clipper; Saturation; Distortion; Compression; Phaser; Chorus; Stereo Width; Limiter; Gate; Transient Shaper; Flanger; Stereo Delay; Reverb; Wah; Frequency Shifter; Ring Modulator; Comb / Resonator; Exciter; Glitch / Stutter; Chop / Reverse; Tape / Vinyl Warp; Front / Back; Pitch Shifter.
 
-148 MODELS, THREE APPROACHES
-Every family starts with MMR and SIMPLE, followed by device-inspired models. MMR is the default: an original, fully featured engine, not a selector for other engines. SIMPLE exposes a smaller practical control set. The catalogue contains 23 MMR, 23 SIMPLE and 102 other profiles. Each profile has its own controls, ranges and defaults, with independent parameter banks.
+Each family starts with MMR (default) and SIMPLE, followed by hardware-inspired models: 23 MMR, 23 SIMPLE and 102 other profiles. MMR uses its own expanded engine; SIMPLE exposes essential controls. Individual models retain their own settings, ranges and defaults. These are original behavioural interpretations, not certified component-exact hardware emulations.
 
-Examples include Tube/Tape/Transistor/Transformer/Console/Worn Tape/Germanium saturation; FET Fast/Opto Leveler/VCA Bus/UP-DOWN/Vari-Mu/Diode Bridge/Clean RMS compression; Bit Crush/Soft Clip/Hard Clip/Foldback/Fuzz/Rectifier/Sample Crush distortion; Barberpole/Vowel phasing; Ensemble/Dual/Vibrato chorus; Haas/Micro Detune/Mono Bass width; Room/Hall/Plate/Spring/Dual Space reverberation; and modal resonators. Other model identities include Clean Cascade, Four-Stage Sweep and Twin Intervals.
+Examples include Tube/Tape/Germanium saturation; FET/Opto/VCA/UP-DOWN/Vari-Mu compression; Fuzz/Rectifier/Sample Crush distortion; Barberpole/Vowel phasing; Ensemble/Dual/Vibrato chorus; Haas/Micro Detune/Mono Bass width; Room/Hall/Plate/Spring/Dual Space reverb; modal resonance; rhythmic capture/reverse; and tape/vinyl motion.
 
-The models use original behavioural DSP inspired by hardware characteristics. They are not certified component-exact recreations. Selected profiles expose detector filtering, external sidechain, recovery, magnetic colour, modulation or feedback controls where supported.
+MMR Saturation and Distortion include EDIT CURVE: an amplitude transfer function, distinct from the synth's periodic wavetable. Add points, shape curvature and audition before Apply. Saturation keeps a monotonic curve; Distortion permits folding and rectification. Editable starting presets, Reset and local Undo/Redo are available. Each instance saves its committed curve; Cancel restores it.
 
-CUSTOM SATURATION AND DISTORTION
-Choose MMR in Saturation or Distortion and use EDIT CURVE to draw an input-to-output transfer curve. Add up to ten interior points plus two end points, move them or adjust their curvature. Saturation preserves a monotonic response; Distortion permits folding and rectification. This editor shapes audio amplitude, unlike the synth editor's periodic wavetable.
+Pitch Shifter offers stepped -12 to +12 semitones and adjacent CENTS fine tuning. MMR has manual Formant and two-voice creative controls. Other models use opposite-direction automatic formant compensation at half the effective pitch. Processing adds latency and can require substantial CPU, especially with high oversampling and small buffers.
 
-CURVE PRESET provides editable starting points:
-- Saturation: NEUTRAL, TUBE, TAPE, CONSOLE, GERMANIUM.
-- Distortion: NEUTRAL, SOFT DIODE, HARD DIODE, ASYMMETRIC FUZZ, RECTIFIER, FOLDBACK.
+SERIAL AND PATCH ROUTING
+------------------------------------
+Each band independently selects its mode:
 
-Audition changes before APPLY; CANCEL restores the committed curve. Reset and local Undo/Redo include preset changes. Each instance saves its own committed geometry with presets/projects. The curve-preset selector shows CUSTOM after manual edits, history operations or reopening; CUSTOM is not a separate FX model. The starting-preset name is not stored separately. These are circuit-inspired static curves, not complete hardware emulations. Existing Input, Drive, Mix, Output, oversampling and DC removal remain in the processing path. Reference WAVE/HARMONICS use the same custom processing.
+SERIAL ROUTING processes effects in rack order. PARALLEL is inactive and ignored by DSP, including stored values and host automation. No cables are shown.
 
-CREATIVE FX
-- Glitch / Stutter: capture, repeat, retrigger, freeze, pitch roll and grain shuffle; separate Grid/Interval/Chance, Gate/Fade and saved Seed.
-- Chop / Reverse: gate, Euclidean/random patterns and history-based reverse, with Swing/Fade. Reverse uses a previous captured segment.
-- Tape / Vinyl Warp: wow/flutter, wear/dropouts, RPM warp, stop/start and granular textures. Optional crackles have separate level/mix and Input Follow; artifacts start disabled.
-- Front / Back: stereo depth, tonal absorption, transient softening and early reflections, with level compensation.
-- Pitch Shifter: whole-semitone PITCH and adjacent CENTS fine tuning. MMR retains manual FORMANT; other profiles use automatic opposite-direction formant compensation at half the effective pitch. Blend a shifted layer or use 100% FX MIX for the shifted rack signal.
-- Rhythmic FX use running host PPQ/BPM or an explicitly labelled manual-tempo fallback. Captured audio refills after restore; parameters and Seed are saved.
+PATCH ROUTING uses explicit stereo connections. Patch directly on the front cards or open the rear-panel FX MAP; both edit the same graph and effect instances.
 
-PITCH SHIFTER
-MMR is the default profile. It has manual Formant and no Delay A/B controls. Other profiles apply automatic formant compensation equal to -0.5 times effective pitch, including cents: an octave down receives +6 semitones of compensation. Available controls depend on the selected model.
+- Connect BAND DI to DI IN, and effect outputs to FX IN or RACK OUTPUT. Several sources may feed an input; relative weights are normalized.
+- Feedback loops, including zero-weight loops, are rejected. Direct clean DI-to-output patching is not allowed. Empty/all-muted racks retain bypass; disconnected active patches remain silent.
+- With both input groups connected, PARALLEL blends clean band DI and processed sources. Connecting the missing second group starts at 50/50; adding a source to an existing group retains the current balance.
+- With only DI or FX sources, PARALLEL is inactive. MIX separately blends each effect's input with its processed sound.
+- Drag existing cables to rewire them, or drop them on empty canvas background to disconnect. Click inputs or right-click cables to inspect sources and weights. Invalid drops preserve the existing connection.
+- Blue cables carry BAND DI; each effect has its own output-cable colour. Hover identifies the source and destination by effect/model names.
+- Green targets accept a connection, red indicates a cycle, grey indicates an incompatible or existing connection.
+- Routing Undo/Redo restores wiring, arrangement and structural changes; automatic 50/50 changes are included with their cable operation.
 
-PITCH uses whole semitones from -12 to +12, with adjacent CENTS fine tuning. Blend in a lower octave or use 100% FX MIX for the shifted rack signal. Each instance processes its own rack band; other active bands and MASTER MIX can retain original audio.
+In PATCH, dragging a card changes only its visual position; its cables stay attached. SERIAL dragging changes audio order. Wiring can be edited directly on effect cards or through FX MAP, with BAND DI and RACK OUTPUT accessible while scrolling.
 
-The guitar-oriented analysis runs at host sample rate under rack oversampling, with filtered conversion around it. FFT/rotation and inactive-path optimizations reduce work without an automatic oversampling reduction or a new low-quality mode. Pitch shifting still adds latency and can be CPU-intensive, especially with many instances and small buffers. Serial instances add delay; the host receives the processing latency. Full monitoring delay also includes crossovers, master stages, host buffers and the interface.
+Trying PARALLEL in SERIAL asks whether to switch to PATCH and connect DI. Confirmation copies the serial chain, replaces saved PATCH wiring and starts at 50/50 where a second group is added. The first DI-only effect remains DI-only. Saved PATCH wiring can also be restored through the mode selector.
 
 RACK WORKFLOW
 ------------------------------------
-Dynamic chains support repeated types with independent settings. There is no fixed manual chain-length limit beyond system resources. Each FX has INPUT/MIX/OUTPUT, meters, double-click default reset, RANDOM and S/M controls. FX SOLO auditions that effect within its rack. MUTE/bypass overrides SOLO and collapses the card; its header retains the name and accessible controls. Suppressed effects fade to latency-aligned bypass before processing is suspended. Drag-and-drop provides a translucent card preview and destination gap.
+- Dynamic chains allow repeated effect types with independent settings and no fixed manual chain-length cap.
+- Click + to choose a model submenu, or click the family name to add MMR directly.
+- FX Solo auditions that effect from BAND DI. Mute/bypass overrides Solo and collapses the card while keeping its name and routing sockets. Band Solo/Mute suppresses the appropriate racks.
+- Drag unused card space to reorder with a translucent preview and insertion gap. Click without dragging to open the same instance in a larger, modeless window. Controls and screens retain their own gestures.
+- RANDOM RACK selects 3-7 distinct families from Wah, Saturation, Distortion, Exciter, Comb/Resonator, Phaser, Flanger, Chorus, Stereo Delay and Reverb, orders them logically and adds a protective final limiter. Models span MMR, SIMPLE and hardware-inspired profiles.
+- RANDOM FX retains its instance and cables. MIX randomizes within 50-100%; manual adjustment remains 0-100%, and new FX start fully wet. INPUT/OUTPUT are not randomized.
+- PARALLEL randomizes only in PATCH: 0/50/100% with 40/20/40% probability. The final guard remains fixed.
+- RKR is a diagnostic knob-sweep mode with independent phases and unique 2-10 second periods. PARALLEL, INPUT, MIX, OUTPUT and SYNC are excluded. Stop retains current values; state loading leaves RKR off.
+- CLEAR asks before removing a rack. PATCH replacement/removal actions have routing-aware confirmations.
 
-RANDOM RACK creates 3-7 distinct effect families from its established creative pool, followed by an additional limiter. Glitch / Stutter, Chop / Reverse, Tape / Vinyl Warp, Front / Back and Pitch Shifter are added manually rather than through RANDOM RACK. Models are selected across MMR, SIMPLE and hardware profiles. Individual RANDOM preserves INPUT/OUTPUT and the instance activity state. CLEAR asks for confirmation.
-
-New effects start at MIX 100%, including duplicate and directly selected models. Restoring a saved patch retains its saved Mix. RANDOM may set a different Mix.
-
-Numeric FX controls use linear scales shared by GUI, host and RKR; intentional choices, counters and semitone controls remain stepped. MMR Hz controls and Tape Warmth have no artificial numeric quantization. Hardware-specific reversed FET time-control direction is retained. This does not alter synth, generator or master scales.
-
-RKR cycles eligible knobs over their full ranges for debugging. Each activation draws fresh, independently phased, unique 2-10 second periods within the plugin instance. Input, Mix, Output and Sync are excluded. Stop to retain current values; loading a state leaves RKR off.
-
-SOLO/MUTE fades out and suspends the affected band's FX/oversampling, discarding old histories. Unmute starts fresh. MASTER MIX can still include the parallel dry contribution. Rack oversampling offers 1x/2x/4x/8x; delay compensation aligns serial effects, parallel bands, dry/wet and separate outputs.
-
-MASTER AND ROUTING
+MASTER PROCESSING AND BAND OUTPUTS
 ------------------------------------
-- Complementary linear-phase FIR crossover with adjustable split frequencies and three steepness profiles.
-- Ten-point Master Parametric EQ with Band, Low Shelf and High Shelf shapes. Select points directly on the graph: white is active, yellow selected and grey muted but still selectable.
-- Each point has Frequency, Q, base Gain and always-visible Side Boost/Mid Boost (-18 to +18 dB each). Effective gains are Gain + Side Boost and Gain + Mid Boost, up to +/-36 dB statically. Mid/Side EQ does not create stereo from mono or automatically preserve loudness.
-- S / LS / B / HS / M provides Solo, shape selection and point bypass. HP/LP use stepped OFF / 12 / 24 / 48 dB/oct controls beside Frequency.
-- Independent Dynamic EQ per point: Threshold -36 to 0 dBFS, continuous Ratio 0.50:1 to 12.00:1, Attack 0.10-500 ms and Release 10-3000 ms. Initial settings: OFF, 0 dBFS, 1:1, 30 ms and 100 ms; switching preserves edits.
-- Dynamic detection follows the point's frequency region without cancelling anti-phase stereo. Ratios above 1 reduce that region above threshold; ratios below 1 expand it; Ratio 1 is neutral. Common Mid/Side correction is limited to +/-18 dB. Curves show the combined response and actual dynamic gain of the selected point.
-- Full-width EQ graph above four compact groups: HP, selected point, Dynamic and LP, with thirteen knobs in one row.
-- EQ Power OFF bypasses HP/LP, point processing and Solo Band. Limiter Power OFF bypasses its Input gain, detector, limiting and Gain Compensation while retaining alignment delay. Master Mix and final Master Output remain independent in MASTER mode.
-- Inactive EQ/Limiter sections are dimmed and grayscale, with analyses stopped and graphs hidden. Settings remain editable. ROUTING replaces both panels with a DAW configuration explanation.
-- Master Limiter: INPUT, CEILING, RELEASE, LOOKAHEAD and post-ceiling GAIN COMPENSATION.
-- Limiter Waveform and compensated ceiling reference are measured before final MASTER OUTPUT; that final gain has its own peak meter.
-- MASTER sends stereo to 1/2. ROUTING bypasses Master processing, silences 1/2 and sends LOW to 3/4, MID to 5/6, HIGH to 7/8.
-- Enable/connect those stereo buses in the host. MMR does not create DAW tracks or sends automatically.
+- Ten-point Master Parametric EQ with Band/Low Shelf/High Shelf shapes, graph selection, selectable muted points and Solo Band audition.
+- Frequency, Q, base Gain and independent Mid/Side Boost (-18 to +18 dB each) per point. Effective gain is base Gain plus the corresponding boost. HP/LP have stepped OFF/12/24/48 dB/oct controls.
+- Dynamic EQ per point: Threshold -36 to 0 dBFS, Ratio 0.5:1 to 12:1, Attack 0.10-500 ms and Release 10-3000 ms. Defaults: OFF, 0 dBFS, 1:1, 30 ms, 100 ms. Ratios below 1 expand above threshold; ratios above 1 compress.
+- Master Limiter: Input gain, Ceiling, Release, Lookahead and post-ceiling Gain Compensation. Its Waveform/compensated ceiling reference is before final MASTER OUTPUT; that final gain has a peak meter.
+- EQ/Limiter OFF bypasses the respective processing, stops its analysis and shows a dimmed grayscale section without plots; alignment delays are retained.
+- MASTER sends the stereo master to 1/2. ROUTING bypasses master processing, silences 1/2 and sends LOW/MID/HIGH to 3/4, 5/6, 7/8. Enable and connect those buses in the DAW; the plugin does not create tracks or sends.
 
-INTERFACE AND PRESETS
+INTERFACE, PRESETS AND REQUIREMENTS
 ------------------------------------
-- Embedded device-inspired panel/knob materials with runtime lighting, preserved 10px borders, hardware typography and model-specific layouts. MMR uses dark yellow/green/blue metal and logo teardrop knobs; SIMPLE uses light metal and walnut knobs. No external image folder is required.
-- FX headers contain variant selection, an uppercase palette-matched name and S/M/RKR/RANDOM/remove actions. INPUT / DISPLAY / OUTPUT stays at the bottom, MIX above OUTPUT, with up to six upper knobs per row. Dedicated 320x142 layout-unit displays remain inside their original frames; card widths account for the vertical scrollbar and do not require horizontal scrolling.
-- Effect-specific views: analogue gain reduction, drive, clipping/overdrive, attenuation, stereo correlation, transient gain and tape-speed deviation; stereo modulation, echoes, reverb tails and other dedicated displays. Cream paper dials sit inside the original recessed frames. UP/DOWN retains its separate digital boost/reduction display.
-- Reference WAVE and green HARMONICS are paired for Clipper, Saturation and Distortion. Other families use relevant effect-specific displays. Tutorial distinguishes measured audio data from independently generated reference previews.
-- Percentage UI SCALE readout and 25/50/75/100% shortcuts. Window width sets control scale from approximately 25% to 200%; independent window height reveals more rack/synth content without enlarging controls. Hardware rails, top crossover and synth Output Guard retain their positions.
-- Mouse clicks and Enter switch FX display pages; Space no longer switches displays or opens the wavetable bank selector. Spaces remain available during text entry. Host handling of transport keys depends on the DAW.
-- Subtle crossover regions over black, following split positions behind the purple spectrum trace.
-- Immediate English Tutorial Mode, enabled for new instances.
-- SAVE AS name entry; SAVE/DELETE and name collisions ask for confirmation.
-- Recall of synth/custom banks/modulation, MMR transfer curves and dynamic FX counts, types, order, model banks, parameters, MUTE and SOLO.
-- Local tab/scroll/window state restored when reopening the editor; full view-state persistence across DAW restarts is not promised.
+Hardware-inspired controls and model-specific visual identities accompany effect-specific displays: analogue meters, stereo modulation, echoes, reverb tails and reference WAVE/HARMONICS where relevant. All artwork is included in the plugin.
 
-COMPATIBILITY AND VALIDATION
-------------------------------------
-Windows 10/11 x64 VST3; JUCE/Projucer and Visual Studio 2026. REAPER is the primary user-test host. Product metadata is 'MMR Multiband Modular Rack', manufacturer 'DzaQ713', avoiding a duplicated suffix when the host adds the manufacturer.
+English Tutorial Mode explains controls as you explore. Resizable windows, UI scaling and independently scrolling racks help adapt the workspace to your screen and project.
 
-VST3 product identity is retained. Current dynamic FX state uses schema 7 and stores per-profile banks and independent instances, including curves and Solo/Mute. Synth CUSTOM waves and transfer-curve geometry are saved separately from automatable scalar controls. Extra instances do not automatically receive unlimited separate host automation slots.
+SAVE AS asks for a name; SAVE/DELETE ask for confirmation. Presets/projects retain dynamic instances, model banks, order, mute/solo, committed custom waves/transfer curves, local modulation and rack wiring. Extra dynamic instances/modulators do not automatically gain unlimited individual host-automation slots.
 
-Saved physical parameter values, including Mix, are restored. Numeric FX controls use linear normalized mappings: 0.5 for a 0.02-10 Hz Rate is 5.01 Hz. Projects from versions using different engines or parameter mappings may need review; no automatic conversion of older normalized DAW automation envelopes is supplied.
+Windows 10/11 x64 with a VST3-compatible DAW. Separate MSVCP140/VCRUNTIME140 runtime DLLs are not required. No macOS/Linux/AU/AAX release is supplied. Host compatibility is not exhaustive; the reported Cubase 12 loading issue remains unverified.
 
-Automated development checks cover the model catalogue, independent MMR processing, curve audition/commit/cancel, state recall, menu choices, UI bindings, audio stability and sample-rate/oversampling combinations. Test coverage does not imply exhaustive host or real-session validation.
+CPU/memory depend on models, buffers, voices and oversampling. Protection applies where it sits in the chain; later gain and positive post-ceiling compensation can raise peaks again. Declared latency is compensated; intentional filter/modulation phase response remains. Older engines, normalized automation mappings and AUTO endpoint-based routing may need review when moving older projects to the current explicit PATCH model.
 
+For bug reports, include MMR/DAW/Windows versions, sample rate, buffer size, oversampling, input/routing mode, reproduction steps and a relevant preset.
 
-RESOURCE AND SIGNAL NOTES
-------------------------------------
-Long Glitch/Chop histories can use about 150 MB per instance at 48 kHz when all four oversampling engines are prepared. Higher sample rates increase this. At 96 kHz with 32-sample host buffers, measured Pitch callback peaks can exceed the available budget. Leave CPU headroom for the rest of the chain and adjust buffer size or oversampling to suit the session.
-
-Pitch processing can change individual-note levels and the character of transients. Pitch processing latency adds to the rest of the monitoring path. Character FX are not exact hardware emulations. Protection applies at its location in the chain: later gain and positive post-ceiling compensation can exceed an earlier ceiling. No certified true-peak mastering claim is made.
-
-No macOS/Linux/AU/AAX binary release, external wavetable import, Vital preset compatibility or user-loadable skin system is advertised.
-
-REPORTING AN ISSUE
-------------------------------------
-Include MMR/Windows/DAW versions, source/engine, sample rate, buffer size, oversampling, voices/unison, output mode, reproduction steps and a relevant preset/routing description.
+Free download: https://dzaq713.itch.io/multiband-modular-rack
