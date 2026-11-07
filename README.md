@@ -100,5 +100,3 @@ Windows 10/11 x64 with a VST3-compatible DAW. Separate MSVCP140/VCRUNTIME140 run
 CPU/memory depend on models, buffers, voices and oversampling. Protection applies where it sits in the chain; later gain and positive post-ceiling compensation can raise peaks again. Declared latency is compensated; intentional filter/modulation phase response remains. Older engines, normalized automation mappings and AUTO endpoint-based routing may need review when moving older projects to the current explicit PATCH model.
 
 For bug reports, include MMR/DAW/Windows versions, sample rate, buffer size, oversampling, input/routing mode, reproduction steps and a relevant preset.
-
-Free download: https://dzaq713.itch.io/multiband-modular-rack
